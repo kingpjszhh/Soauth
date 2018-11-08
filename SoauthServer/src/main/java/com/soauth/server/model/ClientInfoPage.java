@@ -1,8 +1,8 @@
 package com.soauth.server.model;
+
 import com.soauth.core.vo.oauth2.ClientDetails;
 
 /**
- *
  * @author zhoujie
  * @date 2017/12/18
  */

@@ -11,55 +11,54 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 /**
- *
- * @author  周杰
+ * @author 周杰
  * @date 2017/12/1
- *
+ * <p>
  * 获取public / private key
  */
-public class RsaKeyUtils extends RsaKeyUtil{
+public class RsaKeyUtils extends RsaKeyUtil {
 
 
     public static PrivateKey getPrivateKey(boolean singleton, String filePath) throws Exception {
 
-        final PrivateKeyFactory factory= new PrivateKeyFactory();
+        final PrivateKeyFactory factory = new PrivateKeyFactory();
         factory.setAlgorithm(RsaKeyUtil.RSA);
         factory.setResource(new ClassPathResource(filePath));
         factory.setSingleton(singleton);
 
-            return factory.getObject();
+        return factory.getObject();
 
     }
 
-   public static PublicKey getPublicKey(boolean singleton, String filePath) throws Exception {
+    public static PublicKey getPublicKey(boolean singleton, String filePath) throws Exception {
 
-            final PublicKeyFactory factory = new PublicKeyFactory();
-            factory.setAlgorithm(RsaKeyUtil.RSA);
-            factory.setResource(new ClassPathResource(filePath));
-            factory.setSingleton(singleton);
-            return factory.getObject();
+        final PublicKeyFactory factory = new PublicKeyFactory();
+        factory.setAlgorithm(RsaKeyUtil.RSA);
+        factory.setResource(new ClassPathResource(filePath));
+        factory.setSingleton(singleton);
+        return factory.getObject();
 
     }
 
     /**
-     *
      * 解密RSA
-     * @param encode 解密的字符串
+     *
+     * @param encode     解密的字符串
      * @param privateKey 秘钥
-     * @param algname RSA
+     * @param algname    RSA
      * @return
      * @throws Exception
      */
-    public static String decryption(String encode, PrivateKey privateKey , String algname) throws  Exception{
+    public static String decryption(String encode, PrivateKey privateKey, String algname) throws Exception {
 
         BASE64Decoder decoder = new BASE64Decoder();
 
         byte[] bs;
 
-        bs=decoder.decodeBuffer(encode);
-        Cipher cipher =Cipher.getInstance(algname);
+        bs = decoder.decodeBuffer(encode);
+        Cipher cipher = Cipher.getInstance(algname);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-       return new String(cipher.doFinal(bs));
+        return new String(cipher.doFinal(bs));
     }
 }
