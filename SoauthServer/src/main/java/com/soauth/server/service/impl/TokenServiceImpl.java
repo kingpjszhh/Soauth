@@ -11,15 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author zhoujie
  * @date 2017/12/5
  */
 
-@Service()
-public class TokenServiceImpl implements TokenService{
+@Service
+public class TokenServiceImpl implements TokenService {
 
-    private static Logger logger= LoggerFactory.getLogger(TokenServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(TokenServiceImpl.class);
 
     @Autowired
     Tokendao tokendao;
@@ -36,15 +35,15 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public Oauth2Code findOauth2Code(String clientid, String code) {
-          logger.debug("search Code params clientid , code={}{}",clientid,code);
-        Oauth2Code oauth2Code = tokendao.findOauth2Code(clientid,code);
+        logger.debug("search Code params clientid , code={}{}", clientid, code);
+        Oauth2Code oauth2Code = tokendao.findOauth2Code(clientid, code);
         return oauth2Code;
     }
 
     @Override
     public Oauth2Code findOauth2CodeUserAndClientId(String username, String clientid) {
-        logger.debug("search Code params username, clientid={}{}",username,clientid);
-        return tokendao.findOauth2CodeUserAndClientId(username,clientid);
+        logger.debug("search Code params username, clientid={}{}", username, clientid);
+        return tokendao.findOauth2CodeUserAndClientId(username, clientid);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class TokenServiceImpl implements TokenService{
     @Override
     public int saveOauth2Code(Oauth2Code code) {
         logger.info(" Save Code");
-       return tokendao.saveOauth2Code(code);
+        return tokendao.saveOauth2Code(code);
     }
 
 

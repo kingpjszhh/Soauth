@@ -18,47 +18,43 @@ import java.util.Set;
 
 
 /**
- *
  * @author zhoujie
  * @date 2017/11/9
  */
 
 
+public class AuthzCodeAccessToken extends AbstractOIDCHolder {
 
-public class AuthzCodeAccessToken extends  AbstractOIDCHolder {
-
-    private  static Logger log = LoggerFactory.getLogger(AuthzCodeAccessToken.class);
+    private static Logger log = LoggerFactory.getLogger(AuthzCodeAccessToken.class);
 
 
     private String issuer;
 
 
-    public AccessToken createNewAccessToken(ClientDetails clientDetails, String ucode, SoauthTokenRequest request){
+    public AccessToken createNewAccessToken(ClientDetails clientDetails, String ucode, SoauthTokenRequest request) {
 
-            final Oauth2Code code= getCode(clientDetails.getClientId(),ucode);
-            final String username=code.username();
+        final Oauth2Code code = getCode(clientDetails.getClientId(), ucode);
+        final String username = code.username();
 
-            AccessToken accessToken;
-            JwtClaims claims= new JwtClaims();
+        AccessToken accessToken;
+        JwtClaims claims = new JwtClaims();
 
-            // value值解释:http://openid.net/specs/openid-connect-core-1_0.html#IDToken
-           claims.setIssuer(issuer);
-           claims.setAudience(clientDetails.getClientId());
-           claims.setSubject(username);
-           claims.setIssuedAtToNow();
-           claims.setGeneratedJwtId();
+        // value值解释:http://openid.net/specs/openid-connect-core-1_0.html#IDToken
+        claims.setIssuer(issuer);
+        claims.setAudience(clientDetails.getClientId());
+        claims.setSubject(username);
+        claims.setIssuedAtToNow();
+        claims.setGeneratedJwtId();
 
-      accessToken = tokenBuilder.enhance(clientDetails,claims, request,clientDetails.getClientId());
+        accessToken = tokenBuilder.enhance(clientDetails, claims, request, clientDetails.getClientId());
 
-           return  accessToken;
+        return accessToken;
     }
 
 
-
-
-    protected Oauth2Code getCode(String clientid, String code ){
-        log.debug("token Code params clientid , code={}{}",clientid,code);
-        return tokenService.findOauth2Code(clientid,code);
+    protected Oauth2Code getCode(String clientid, String code) {
+        log.debug("token Code params clientid , code={}{}", clientid, code);
+        return tokenService.findOauth2Code(clientid, code);
 
     }
 

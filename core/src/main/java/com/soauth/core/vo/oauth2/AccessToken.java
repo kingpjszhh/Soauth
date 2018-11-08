@@ -4,11 +4,9 @@ package com.soauth.core.vo.oauth2;
 import com.google.common.collect.Maps;
 import com.soauth.core.utils.DateUtils;
 import com.soauth.core.vo.AbstarctVo;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.jose4j.jwt.JwtClaims;
 
 import java.util.Map;
 import java.util.Set;

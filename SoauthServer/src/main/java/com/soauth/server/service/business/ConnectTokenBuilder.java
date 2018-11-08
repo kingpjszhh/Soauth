@@ -2,13 +2,11 @@ package com.soauth.server.service.business;
 
 import com.soauth.core.openid.connect.signature.DefaultSignatrueAndverifySignatrue;
 import com.soauth.core.utils.RsaKeyUtils;
-import com.soauth.core.vo.oauth2.AbstractOIDC;
 import com.soauth.core.vo.oauth2.AccessToken;
 import com.soauth.core.vo.oauth2.ClientDetails;
 import com.soauth.core.vo.oauth2.RefreshToken;
-import com.soauth.server.oauth.SoauthTokenRequest;
-import com.soauth.server.service.UserInfoService;
 import com.soauth.server.service.TokenService;
+import com.soauth.server.service.UserInfoService;
 import org.apache.oltu.oauth2.as.request.OAuthRequest;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.jose4j.jwt.JwtClaims;
@@ -22,15 +20,14 @@ import org.springframework.stereotype.Service;
 import java.security.PrivateKey;
 
 /**
- *
- * @author  zhoujie
+ * @author zhoujie
  * @date 2017/12/4
  */
 
 @Service()
-public class ConnectTokenBuilder implements  TokenBuilder {
+public class ConnectTokenBuilder implements TokenBuilder {
 
-    private static  Logger logger = LoggerFactory.getLogger(ConnectTokenBuilder.class);
+    private static Logger logger = LoggerFactory.getLogger(ConnectTokenBuilder.class);
 
     @Autowired
     AuthorizationIdToken idToken;
@@ -47,11 +44,12 @@ public class ConnectTokenBuilder implements  TokenBuilder {
     @Autowired
     AuthRefreshToken authRefreshToken;
 
-    private  static   PrivateKey pk;
-    static{
-         String path="keys/RSA2048private.key";
+    private static PrivateKey pk;
+
+    static {
+        String path = "keys/RSA2048private.key";
         try {
-           pk= RsaKeyUtils.getPrivateKey(false,path);
+            pk = RsaKeyUtils.getPrivateKey(false, path);
         } catch (Exception e) {
 
             logger.error("无法获取到private key, 请检查配置 错误信息{}");
@@ -60,7 +58,8 @@ public class ConnectTokenBuilder implements  TokenBuilder {
 
 
     /**
-     *  创建idToken, 或者refreshToken, 或者accessToken.
+     * 创建idToken, 或者refreshToken, 或者accessToken.
+     *
      * @param claims
      * @param request
      * @param clientDetails
@@ -70,24 +69,24 @@ public class ConnectTokenBuilder implements  TokenBuilder {
     @Override
     public AccessToken enhance(ClientDetails clientDetails, JwtClaims claims, OAuthRequest request, String issuer) {
 
-        AccessToken accessToken= new AccessToken();
+        AccessToken accessToken = new AccessToken();
         claims.setExpirationTimeMinutesInTheFuture(AccessToken.ACCESS_TOKEN_VALIDITY_SECONDS);
         claims.setIssuedAt(NumericDate.now());
-        String signtoken=null;
-        String username=null;
-        NumericDate now=null;
+        String signtoken = null;
+        String username = null;
+        NumericDate now = null;
 
         try {
-            username=claims.getSubject();
-            now=claims.getIssuedAt();
+            username = claims.getSubject();
+            now = claims.getIssuedAt();
 
-           signtoken=signatrue.signatrueJwt(pk,claims.toString());
+            signtoken = signatrue.signatrueJwt(pk, claims.toString());
         } catch (Exception e) {
 
-            if(e instanceof JoseException){
+            if (e instanceof JoseException) {
                 logger.error("无法对accessToken进行签名 ");
                 e.printStackTrace();
-            }else {
+            } else {
                 e.printStackTrace();
             }
         }
@@ -99,35 +98,35 @@ public class ConnectTokenBuilder implements  TokenBuilder {
         // set accessToken
         accessToken.setTokenvalue(signtoken);
 
-         logger.debug("scope..{}",accessToken.getScope().toString());
+        logger.debug("scope..{}", accessToken.getScope().toString());
         // create RefershToken
-        if(accessToken.getScope().contains(OAuth.OAUTH_REFRESH_TOKEN)) {
+        if (accessToken.getScope().contains(OAuth.OAUTH_REFRESH_TOKEN)) {
 
-            RefreshToken refreshToken= enhanceRefreshToken(clientDetails, issuer, username);
+            RefreshToken refreshToken = enhanceRefreshToken(clientDetails, issuer, username);
             accessToken.setRefreshToken(refreshToken);
-        }else{
+        } else {
 
             accessToken.setRefreshToken(null);
         }
 
 
-        String compared="openid";
+        String compared = "openid";
         //create idToken
-        if(request.getScopes().contains(compared)){
-           String idToken=enhanceIdToken(request,accessToken,username,clientDetails.getClientId(),now);
-           accessToken.setIdToken(idToken);
+        if (request.getScopes().contains(compared)) {
+            String idToken = enhanceIdToken(request, accessToken, username, clientDetails.getClientId(), now);
+            accessToken.setIdToken(idToken);
         }
 
         return accessToken;
 
     }
 
-    private  String enhanceIdToken( OAuthRequest request, AccessToken token, String username, String clientid, NumericDate issTime){
-          JwtClaims claims = new JwtClaims();
-          claims = idToken.createIdToken(clientid,request,username,issTime,claims);
-        String signIdtoken=null;
+    private String enhanceIdToken(OAuthRequest request, AccessToken token, String username, String clientid, NumericDate issTime) {
+        JwtClaims claims = new JwtClaims();
+        claims = idToken.createIdToken(clientid, request, username, issTime, claims);
+        String signIdtoken = null;
         try {
-         signIdtoken=signatrue.signatrueJwt(pk,claims.toString());
+            signIdtoken = signatrue.signatrueJwt(pk, claims.toString());
         } catch (JoseException e) {
             logger.error("无法对idToken进行签名");
             e.printStackTrace();
@@ -137,14 +136,13 @@ public class ConnectTokenBuilder implements  TokenBuilder {
     }
 
 
-    private RefreshToken enhanceRefreshToken(ClientDetails clientDetails, String issuer, String username){
+    private RefreshToken enhanceRefreshToken(ClientDetails clientDetails, String issuer, String username) {
 
-        String   refreshvalue=null;
-        JwtClaims claims=authRefreshToken.createRefreshToken(issuer,username);
-        RefreshToken refreshToken= new RefreshToken();
+        String refreshvalue = null;
+        JwtClaims claims = authRefreshToken.createRefreshToken(issuer, username);
+        RefreshToken refreshToken = new RefreshToken();
         try {
-
-            refreshvalue=signatrue.signatrueJwt(pk,claims.toString());
+            refreshvalue = signatrue.signatrueJwt(pk, claims.toString());
         } catch (JoseException e) {
             logger.error("refreshtoken 签名错误 ");
             e.printStackTrace();
@@ -153,9 +151,8 @@ public class ConnectTokenBuilder implements  TokenBuilder {
 
         refreshToken.setClientDetails(clientDetails);
 
-       return refreshToken;
+        return refreshToken;
     }
-
 
 
 }

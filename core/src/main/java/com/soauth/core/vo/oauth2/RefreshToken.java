@@ -4,7 +4,6 @@ import com.soauth.core.utils.DateUtils;
 import com.soauth.core.vo.AbstarctVo;
 import lombok.Getter;
 import lombok.Setter;
-import org.jose4j.jwt.JwtClaims;
 
 import static com.soauth.core.vo.oauth2.AccessToken.THOUSAND;
 
