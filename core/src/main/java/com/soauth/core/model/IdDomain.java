@@ -6,12 +6,10 @@ import com.soauth.core.vo.AbstarctVo;
 import java.io.Serializable;
 
 /**
- *
  * @author zhoujie
  * @date 2017/9/25
- *
  */
-public abstract class IdDomain extends AbstarctVo{
+public abstract class IdDomain extends AbstarctVo {
 
     private static final long serialVersionUID = 3081728884257451223L;
 
@@ -44,7 +42,6 @@ public abstract class IdDomain extends AbstarctVo{
         this.id = id;
         return (T) this;
     }
-
 
 
     public boolean archived() {
